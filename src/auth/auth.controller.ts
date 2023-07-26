@@ -10,22 +10,26 @@ import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LocalAuthGuard } from './local.guard';
 import { jwtAuthGuard } from './jwt-auth.guard';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('register')
   async registration(@Body() dto: CreateUserDto) {
     const user = await this.userService.create(dto);
 
-    return user;
+    return await this.authService.createToken(user);
   }
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async postLogin(@Request() request) {
-    return request.user.properties;
+    return await this.authService.createToken(request.user);
   }
 
   @UseGuards(jwtAuthGuard)
