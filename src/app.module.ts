@@ -3,8 +3,15 @@ import { Neo4jModule } from './neo4j/neo4j.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { EncryptionModule } from './encryption/encryption.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [Neo4jModule.forRoot(), AuthModule, UserModule, EncryptionModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    Neo4jModule.forRoot(),
+    AuthModule,
+    UserModule,
+    EncryptionModule,
+  ],
 })
 export class AppModule {}

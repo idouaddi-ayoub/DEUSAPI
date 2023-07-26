@@ -1,7 +1,15 @@
-import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  Request,
+  Get,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LocalAuthGuard } from './local.guard';
+import { jwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +25,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async postLogin(@Request() request) {
+    return request.user.properties;
+  }
+
+  @UseGuards(jwtAuthGuard)
+  @Get('user')
+  async getUser(@Request() request) {
     return request.user.properties;
   }
 }
