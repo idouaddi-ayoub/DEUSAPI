@@ -17,6 +17,7 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
+  afterEach(() => app.close());
 
   describe('Auth', () => {
     describe('POST /auth/register', () => {
@@ -30,30 +31,29 @@ describe('AppController (e2e)', () => {
         return request(app.getHttpServer())
           .post('/auth/register')
           .set('Accept', 'application/json')
-          .send({body})
+          .send({ body })
           .expect(400)
           .expect((res) => {
             expect(res.body.message);
           });
       });
 
-      // it('say balls', () => {
-      //   let email = `${Math.random()}@gmail.com`
-      //   const body: CreateUserDto = {
-      //     email,
-      //     dateOfBirth: '2023-01-22',
-      //     username: 'lolrandomxd',
-      //     password: 'bruhrabua57',
-      //   };
-      //   return request(app.getHttpServer())
-      //   .post('/auth/register')
-      //     .set('Accept', 'application/json')
-      //     .send(body)
-      //     .expect(201)
-      //     .expect((res) => {
-      //       expect(res.body.mail).toBe(email);
-      //     });
-      // })
+      it('say balls', () => {
+        const body: CreateUserDto = {
+          email: 'bzi@gmail.com',
+          password: 'bruhrabua57',
+          username: 'lolrandomxd',
+          dateOfBirth: '2001-01-22',
+        };
+        return request(app.getHttpServer())
+          .post('/auth/register')
+          .set('Accept', 'application/json')
+          .send(body)
+          .expect(500)
+          .expect((res) => {
+            expect(res.body.message).toContain('password empty');
+          });
+      });
     });
   });
 });
