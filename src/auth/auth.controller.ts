@@ -11,17 +11,24 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LocalAuthGuard } from './local.guard';
 import { jwtAuthGuard } from './jwt-auth.guard';
 import { AuthService } from './auth.service';
+import { MembershipService } from '../membership/membership.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
+    private readonly membershipService: MembershipService,
   ) {}
 
   @Post('register')
   async registration(@Body() dto: CreateUserDto) {
     const user = await this.userService.create(dto);
+
+    await this.membershipService.createMembership(
+      user,
+      '974cc74a-d70e-459d-8d97-ce68a0b2822d',
+    );
 
     return await this.authService.createToken(user);
   }

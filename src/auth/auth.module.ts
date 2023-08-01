@@ -9,6 +9,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config/dist';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { EncryptionModule } from '../encryption/encryption.module';
+import { MembershipModule } from '../membership/membership.module';
 
 @Module({
   imports: [
@@ -23,6 +25,9 @@ import { JwtStrategy } from './jwt.strategy';
         },
       }),
     }),
+    UserModule,
+    EncryptionModule,
+    MembershipModule,
   ],
   providers: [
     AuthService,
