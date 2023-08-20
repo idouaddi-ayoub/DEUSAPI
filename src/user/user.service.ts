@@ -13,13 +13,13 @@ export class UserService {
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  async findByEmail(email: string): Promise<User | undefined> {
+  async findByUsername(username: string): Promise<User | undefined> {
     const res = await this.neo4jService.read(
       `
-      MATCH (u:User) {email: $email}
+      MATCH (u:User {username: $username})
       RETURN u
     `,
-      { email },
+      { username },
     );
 
     return res.records.length == 1 ? res.records[0].get('u') : undefined;

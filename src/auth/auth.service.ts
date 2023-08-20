@@ -11,8 +11,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string) {
-    const user = await this.userService.findByEmail(email);
+  async validateUser(username: string, password: string) {
+    const user = await this.userService.findByUsername(username);
     if (
       user !== undefined &&
       (await this.encruptionService.compare(password, user.properties.password))

@@ -42,6 +42,12 @@ export class AuthController {
   @UseGuards(jwtAuthGuard)
   @Get('user')
   async getUser(@Request() request) {
-    return request.user.properties;
+    const { id, email, dateOfBirth } = request.user.properties;
+
+    return {
+      id,
+      email,
+      dateOfBirth,
+    };
   }
 }
