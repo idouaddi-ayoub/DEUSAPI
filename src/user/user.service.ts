@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Neo4jService } from '../neo4j/neo4j.service';
 import { Node } from 'neo4j-driver';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { EncryptionService } from '../encryption/encryption.service';
 
 export type User = Node;
@@ -40,6 +41,24 @@ export class UserService {
       },
     );
 
+    return res.records[0].get('u');
+  }
+
+  async update(dto: UpdateUserDto): Promise<User> {
+    const res = await this.neo4jService.write(
+      `
+            MATCH (u:User { id: $id })
+            SET u += $properties
+            RETURN u
+        `,
+      {
+        properties: {
+          email: dto.email,
+          username: dto.username,
+          dateOfBirth: dto.dateOfBirth,
+        },
+      },
+    );
     return res.records[0].get('u');
   }
 }
