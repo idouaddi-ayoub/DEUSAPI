@@ -9,8 +9,8 @@ import {
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
-import { LocalAuthGuard } from './local.guard';
-import { jwtAuthGuard } from './jwt-auth.guard';
+import { LocalAuthGuard } from '../local/local.guard';
+import { jwtAuthGuard } from '../jwt/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { MembershipService } from '../membership/membership.service';
 
