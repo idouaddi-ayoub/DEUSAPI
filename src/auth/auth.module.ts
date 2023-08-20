@@ -11,9 +11,11 @@ import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { EncryptionModule } from '../encryption/encryption.module';
 import { MembershipModule } from '../membership/membership.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     UserModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -38,6 +40,11 @@ import { MembershipModule } from '../membership/membership.module';
     LocalStrategy,
     JwtStrategy,
   ],
-  controllers: [AuthController],
+  controllers: [
+    AuthController,
+    // UserController, UsersController, ProfileController
+  ],
 })
-export class AuthModule {}
+export class AuthModule {
+  constructor(private readonly neo4jService: Neo4jService) {}
+}
