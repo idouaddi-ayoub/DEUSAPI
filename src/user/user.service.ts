@@ -26,7 +26,19 @@ export class UserService {
     return res.records.length == 1 ? res.records[0].get('u') : undefined;
   }
 
-  async create(dto: CreateUserDto): Promise<User> {
+  async getAllUsers(username: string): Promise<User | undefined> {
+    const res = await this.neo4jService.read(
+      `
+      MATCH (u:User  {username: $username})
+      RETURN u
+    `,
+      { username },
+    );
+
+    return res.records.length == 1 ? res.records[0].get('u') : undefined;
+  }
+
+  async createUser(dto: CreateUserDto): Promise<User> {
     const res = await this.neo4jService.write(
       `CREATE (u:User) 
         SET u += $properties, u.id = randomUUID()

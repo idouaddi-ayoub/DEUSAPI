@@ -3,9 +3,11 @@ import { EncryptionService } from '../encryption/encryption.service';
 import { EncryptionModule } from '../encryption/encryption.module';
 import { Neo4jService } from '../neo4j/neo4j.service';
 import { ConfigService } from '@nestjs/config';
+import { UserController } from './user.controller';
 
 @Module({
   providers: [Neo4jService, EncryptionService, ConfigService],
   imports: [EncryptionModule],
+  controllers: [UserController],
 })
 export class UserModule {}
