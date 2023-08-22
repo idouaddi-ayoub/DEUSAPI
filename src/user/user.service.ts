@@ -4,6 +4,7 @@ import { Node } from 'neo4j-driver';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EncryptionService } from '../encryption/encryption.service';
+import { LoginDto } from './dto/login-user.dto';
 
 export type User = Node;
 
@@ -26,13 +27,18 @@ export class UserService {
     return res.records.length == 1 ? res.records[0].get('u') : undefined;
   }
 
-  async getAllUsers(username: string): Promise<User | undefined> {
+  async getUser(log: LoginDto): Promise<User | undefined> {
     const res = await this.neo4jService.read(
       `
       MATCH (u:User  {username: $username})
       RETURN u
     `,
-      { username },
+      {
+        properties: {
+          username: log.username,
+          password: log.password,
+        },
+      },
     );
 
     return res.records.length == 1 ? res.records[0].get('u') : undefined;
