@@ -11,13 +11,13 @@ export class UserController {
   @UseGuards(AuthenticationGuard)
   @Get()
   getUser(@Body() user: LoginDto) {
-    console.log('In the rout handler logic with body', user);
+    console.log('In the route handler logic with body', user);
     return this.userService.getUser(user);
   }
 
   @Post()
   createUser(@Body() body: CreateUserDto) {
-    console.log('In the rout handler logic with body', body);
+    console.log('In the route handler logic with body', body);
     return this.userService.createUser(body);
   }
 }
