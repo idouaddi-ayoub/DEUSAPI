@@ -24,7 +24,7 @@ import { Record } from 'neo4j-driver';
       useFactory: (ConfigService: ConfigService) => ({
         secret: ConfigService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: ConfigService.get<string>('JWT_EXPIRES_IN'),
+          expiresIn: ConfigService.get<string | number>('JWT_EXPIRES_IN'),
         },
       }),
     }),

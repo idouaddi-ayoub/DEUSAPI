@@ -7,7 +7,7 @@ import { User, UserService } from '../user/user.service';
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly encruptionService: EncryptionService,
+    private readonly encryptionService: EncryptionService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -15,7 +15,7 @@ export class AuthService {
     const user = await this.userService.findByUsername(username);
     if (
       user !== undefined &&
-      (await this.encruptionService.compare(password, user.properties.password))
+      (await this.encryptionService.compare(password, user.properties.password))
     ) {
       return user;
     }

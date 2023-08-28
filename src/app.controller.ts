@@ -2,7 +2,7 @@ import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
 
-@Controller('client')
+@Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -10,7 +10,7 @@ export class AppController {
   // @UseGuards(AuthGuard('local'))
   // @Post('auth/login')
   @Get()
-  getCount(): Promise<string> {
-    return this.appService.getCount();
+  getNodes(): Promise<string> {
+    return this.appService.getNodes();
   }
 }

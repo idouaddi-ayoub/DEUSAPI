@@ -7,7 +7,6 @@ export type Membership = Node;
 @Injectable()
 export class MembershipService {
   constructor(private readonly neo4jService: Neo4jService) {}
-
   async createMembership(
     user: User,
     membershipId: string,
@@ -16,7 +15,6 @@ export class MembershipService {
     const res = await this.neo4jService.write(
       `
         MERGE (u:User {id: $userId})-[:BOUGHT]-(m:Membership)
-
         return m
     `,
       { userId, membershipId },

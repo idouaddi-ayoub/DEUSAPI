@@ -5,14 +5,14 @@ import { Injectable } from '@nestjs/common';
 export class AppService {
   constructor(private readonly neo4jservice: Neo4jService) {}
 
-  async getCount(): Promise<string> {
+  async getNodes(): Promise<string> {
     const result = await this.neo4jservice.read(
-      `MATCH (n) RETURN count(n) AS count`,
+      `MATCH (n) RETURN count(n) AS node`,
       {},
     );
 
-    const count = result.records[0].get('count');
+    const node = result.records[0].get('node');
 
-    return `There are ${count} nodes in the database`;
+    return `There are ${node} nodes in the database`;
   }
 }
