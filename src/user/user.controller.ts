@@ -10,9 +10,9 @@ export class UserController {
 
   @UseGuards(AuthenticationGuard)
   @Get()
-  getUser(@Body() user: LoginDto) {
+  getUserByUsername(@Body() user: LoginDto) {
     console.log('In the route handler logic with body', user);
-    return this.userService.getUser(user);
+    return this.userService.getUserByUsername(user.username);
   }
 
   @Post()

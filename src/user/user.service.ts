@@ -27,7 +27,7 @@ export class UserService {
     return res.records.length == 1 ? res.records[0].get('u') : undefined;
   }
 
-  async getUser(log: LoginDto): Promise<User | undefined> {
+  async getUserByUsername(username: string): Promise<User | undefined> {
     const res = await this.neo4jService.read(
       `
       MATCH (u:User  {username: $username})
@@ -35,8 +35,7 @@ export class UserService {
     `,
       {
         properties: {
-          username: log.username,
-          password: log.password,
+          username: username,
         },
       },
     );
