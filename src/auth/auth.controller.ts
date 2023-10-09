@@ -26,10 +26,7 @@ export class AuthController {
   async registration(@Body() dto: CreateUserDto) {
     const user = await this.userService.createUser(dto);
 
-    await this.membershipService.createMembership(
-      user,
-      '974cc74a-d70e-459d-8d97-ce68a0b2822d',
-    );
+    await this.membershipService.createMembership('459d-8d97-ce68a0b2822d');
 
     return await this.authService.createToken(user);
   }

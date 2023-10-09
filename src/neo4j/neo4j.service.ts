@@ -4,6 +4,8 @@ import neo4j, { Driver, Result } from 'neo4j-driver';
 import { createDriver } from './neo4j-config/neo4j-util';
 
 @Injectable()
+
+//Neo4j's string connection {Neo4jConfig}
 export class Neo4jService {
   private readonly config: Neo4jConfig = {
     scheme: 'neo4j',
@@ -12,6 +14,7 @@ export class Neo4jService {
     username: 'neo4j',
     password: '12345678',
   };
+
   private driver: Driver;
 
   constructor() {
