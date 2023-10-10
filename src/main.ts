@@ -5,10 +5,10 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // Use Global Filter/Pipes
   app.useGlobalFilters(new Neo4jErrorFilter());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  app.setGlobalPrefix('api');
   await app.listen(3000);
 }
 bootstrap();
