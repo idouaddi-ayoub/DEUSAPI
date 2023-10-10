@@ -10,9 +10,9 @@ export class Neo4jService {
   private readonly config: Neo4jConfig = {
     scheme: 'neo4j',
     host: 'localhost',
-    port: 7693,
+    port: 7687,
     username: 'neo4j',
-    password: '12345678',
+    password: '123456789',
   };
 
   private driver: Driver;

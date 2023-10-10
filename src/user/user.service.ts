@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Neo4jService } from '../neo4j/neo4j.service';
 import { Node } from 'neo4j-driver';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EncryptionService } from '../encryption/encryption.service';
-import { LoginDto } from './dto/login-user.dto';
+import { CreateUserParams } from 'src/util/types';
 
 export type User = Node;
 
@@ -15,50 +14,34 @@ export class UserService {
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  async findByUsername(username: string): Promise<User | undefined> {
-    const res = await this.neo4jService.read(
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const user = await this.neo4jService.read(
       `
-      MATCH (u:User {username: $username})
+      MATCH (u:User  {username: $username})
       RETURN u
     `,
       { username },
     );
 
-    return res.records.length == 1 ? res.records[0].get('u') : undefined;
+    return user.records.length == 1 ? user.records[0].get('u') : undefined;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const res = await this.neo4jService.read(
-      `
-      MATCH (u:User  {username: $username})
-      RETURN u
-    `,
-      {
-        properties: {
-          username: username,
-        },
-      },
-    );
-
-    return res.records.length == 1 ? res.records[0].get('u') : undefined;
-  }
-
-  async createUser(dto: CreateUserDto): Promise<User> {
-    const res = await this.neo4jService.write(
+  async createUser(UserData: CreateUserParams): Promise<User> {
+    const user = await this.neo4jService.write(
       ` CREATE (u:User) 
         SET u += $properties, u.id = randomUUID()
         RETURN u`,
       {
         properties: {
-          email: dto.email,
-          password: await this.encryptionService.hash(dto.password),
-          username: dto.username,
-          dateOfBirth: dto.dateOfBirth,
+          password: await this.encryptionService.hash(UserData.password),
+          username: UserData.username,
+          lol: UserData.lol,
+          chi7aja: UserData.chi7aja,
         },
       },
     );
 
-    return res.records[0].get('u');
+    return user.records[0].get('u');
   }
 
   async update(dto: UpdateUserDto): Promise<User> {
