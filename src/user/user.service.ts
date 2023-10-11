@@ -3,7 +3,7 @@ import { Neo4jService } from '../neo4j/neo4j.service';
 import { Node } from 'neo4j-driver';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EncryptionService } from '../encryption/encryption.service';
-import { CreateUserParams } from 'src/util/types';
+import { CreateUserDto } from './dto/create-user.dto';
 
 export type User = Node;
 
@@ -17,7 +17,7 @@ export class UserService {
   async getUserByUsername(username: string): Promise<User | undefined> {
     const user = await this.neo4jService.read(
       `
-      MATCH (u:User  {username: $username})
+      MATCH (u:User {username: $username})
       RETURN u
     `,
       { username },
@@ -26,17 +26,17 @@ export class UserService {
     return user.records.length == 1 ? user.records[0].get('u') : undefined;
   }
 
-  async createUser(UserData: CreateUserParams): Promise<User> {
+  async createUser(UserData: CreateUserDto): Promise<User> {
     const user = await this.neo4jService.write(
       ` CREATE (u:User) 
         SET u += $properties, u.id = randomUUID()
-        RETURN u`,
+        RETURN u
+        `,
       {
         properties: {
-          password: await this.encryptionService.hash(UserData.password),
           username: UserData.username,
-          lol: UserData.lol,
-          chi7aja: UserData.chi7aja,
+          password: await this.encryptionService.hash(UserData.password),
+          email: UserData.email,
         },
       },
     );
@@ -44,21 +44,22 @@ export class UserService {
     return user.records[0].get('u');
   }
 
-  async update(dto: UpdateUserDto): Promise<User> {
-    const res = await this.neo4jService.write(
+  async updateUser(id: number, UserData: UpdateUserDto) {
+    const user = await this.neo4jService.write(
       `
-            MATCH (u:User { id: $id })
+            MATCH (u:User)
+            WHERE ID(u) = ${id}
             SET u += $properties
             RETURN u
         `,
       {
         properties: {
-          email: dto.email,
-          username: dto.username,
-          dateOfBirth: dto.dateOfBirth,
+          username: UserData.username,
+          password: await this.encryptionService.hash(UserData.password),
+          email: UserData.email,
         },
       },
     );
-    return res.records[0].get('u');
+    return user;
   }
 }

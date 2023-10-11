@@ -1,19 +1,27 @@
-import { Controller, UseGuards, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LoginDto } from './dto/login-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get()
-  getUserByUsername(@Body() user: LoginDto) {
-    return this.userService.getUserByUsername(user.username);
+  @Get(':username')
+  getUserByUsername(
+    @Param('username') username: string,
+    // @Body() user: LoginDto
+  ) {
+    return this.userService.getUserByUsername(username);
   }
 
   @Post()
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+  createUser(@Body() createUser: CreateUserDto) {
+    return this.userService.createUser(createUser);
+  }
+
+  @Put(':id')
+  async updateUser(@Param('id') id: number, @Body() UserData: UpdateUserDto) {
+    return this.userService.updateUser(id, UserData);
   }
 }
