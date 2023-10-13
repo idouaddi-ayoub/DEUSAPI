@@ -1,20 +1,17 @@
-import { Controller, UseGuards, Get, Post } from '@nestjs/common';
+import { Controller, UseGuards, Get, Post, Param } from '@nestjs/common';
 import { MembershipService } from './membership.service';
-import { User } from '../user/user.service';
 
 @Controller('membership')
 export class MembershipController {
   constructor(private membershipService: MembershipService) {}
 
-  @Get()
-  getUserByUsername(userId: string, membershipId: string) {
-    console.log('In the route handler logic with body', userId, membershipId);
-    return this.membershipService.getUserMembership(userId, membershipId);
+  @Get(':id')
+  getUserById(@Param('id') id: number) {
+    return this.membershipService.getUserMembership(id);
   }
 
-  @Post()
-  createUser(User: User, membershipId: string) {
-    console.log('In the route handler logic with body', User, membershipId);
-    return this.membershipService.createMembership(User);
+  @Post(':id')
+  createMembershipById(@Param('id') id: number) {
+    return this.membershipService.createMembership(id);
   }
 }

@@ -7,12 +7,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get(':username')
-  getUserByUsername(
-    @Param('username') username: string,
+  @Get(':id')
+  getUserById(
+    @Param('id') id: number,
     // @Body() user: LoginDto
   ) {
-    return this.userService.getUserByUsername(username);
+    return this.userService.getUserById(id);
   }
 
   @Post()

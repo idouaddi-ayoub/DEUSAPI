@@ -14,19 +14,20 @@ export class UserService {
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
+  async getUserById(id: number) {
     const user = await this.neo4jService.read(
       `
-      MATCH (u:User {username: $username})
+      MATCH (u:User)
+      WHERE ID(u) = ${id}
       RETURN u
     `,
-      { username },
+      {},
     );
 
-    return user.records.length == 1 ? user.records[0].get('u') : undefined;
+    return user;
   }
 
-  async createUser(UserData: CreateUserDto): Promise<User> {
+  async createUser(UserData: CreateUserDto) {
     const user = await this.neo4jService.write(
       ` CREATE (u:User) 
         SET u += $properties, u.id = randomUUID()
@@ -40,8 +41,7 @@ export class UserService {
         },
       },
     );
-
-    return user.records[0].get('u');
+    return user;
   }
 
   async updateUser(id: number, UserData: UpdateUserDto) {

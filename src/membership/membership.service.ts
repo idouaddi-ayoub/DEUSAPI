@@ -1,35 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { Node } from 'neo4j-driver';
 import { Neo4jService } from '../neo4j/neo4j.service';
-import { User } from '../user/user.service';
 
 export type Membership = Node;
 
 @Injectable()
 export class MembershipService {
   constructor(private readonly neo4jService: Neo4jService) {}
-  async createMembership(User: User): Promise<Membership> {
-    const res = await this.neo4jService.write(
+  async createMembership(id: number) {
+    const user = await this.neo4jService.write(
       `
-        MERGE (u:User {id: $userId})-[:BOUGHT]-(m:Membership)
-        return m
+      MATCH (u:User)
+      WHERE ID(u) = ${id}
+      CREATE (u)-[:BOUGHT]->(m:Membership {id: randomUUID(), date: datetime()})
+      RETURN u, m
     `,
-      { User },
+      {},
     );
-    return res.records[0].get('m');
+    return user;
   }
 
-  async getUserMembership(
-    userId: string,
-    membershipId: string,
-  ): Promise<Membership> {
-    const res = await this.neo4jService.read(
+  async getUserMembership(id: number) {
+    const user = await this.neo4jService.read(
       `
-      MATCH (u:User)-[:BOUGHT]
+      MATCH (u:User)-[:BOUGHT]-(m:Membership)
+      WHERE ID(u) = ${id}
       RETURN u
     `,
-      { userId, membershipId },
+      {},
     );
-    return res.records[0].get('m');
+    return user;
   }
 }
