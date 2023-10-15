@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MembershipModule } from './membership/membership.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { GamesModule } from './games/games.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AppService } from './app.service';
     UserModule,
     EncryptionModule,
     MembershipModule,
+    GamesModule,
   ],
   providers: [AppService],
   controllers: [AppController],

@@ -8,10 +8,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get(':id')
-  getUserById(
-    @Param('id') id: number,
-    // @Body() user: LoginDto
-  ) {
+  getUserById(@Param('id') id: number) {
     return this.userService.getUserById(id);
   }
 
