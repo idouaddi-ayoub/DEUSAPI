@@ -7,8 +7,8 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
+  controllers: [UserController],
   providers: [Neo4jService, EncryptionService, ConfigService, UserService],
   imports: [EncryptionModule],
-  controllers: [UserController],
 })
 export class UserModule {}

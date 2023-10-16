@@ -4,8 +4,8 @@ import { MembershipService } from './membership.service';
 import { MembershipController } from './membership.controller';
 
 @Module({
+  controllers: [MembershipController],
   providers: [MembershipService, Neo4jService],
   exports: [MembershipService],
-  controllers: [MembershipController],
 })
 export class MembershipModule {}
