@@ -7,6 +7,7 @@ export type Membership = Node;
 @Injectable()
 export class MembershipService {
   constructor(private readonly neo4jService: Neo4jService) {}
+
   async createMembership(id: number) {
     const user = await this.neo4jService.write(
       `
