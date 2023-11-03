@@ -1,9 +1,11 @@
-import { IsNotEmpty } from 'class-validator';
+export class CreateTournamentDTO {
+  [key: string]: any;
+}
 
-export class CreateTournamentDto {
-  @IsNotEmpty()
-  name: string;
+export class UserJoiningDTO {
+  [key: string]: any;
+}
 
-  @IsNotEmpty()
-  genre: string;
+export class CreateMatchDTO {
+  [key: string]: any;
 }
