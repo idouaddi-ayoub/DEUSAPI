@@ -8,41 +8,10 @@ import { Partic, Tournament } from './tournament.interface';
 
 @Injectable()
 export class TournamentService {
-  constructor(
-    private readonly neo4jService: Neo4jService,
-    private readonly tournament: Tournament,
-    private readonly partic: Partic[],
-  ) {}
+  constructor(private readonly neo4jService: Neo4jService) {}
 
-  async getTournamentById(id: number) {
-    const tournament = await this.neo4jService.read(
-      `
-        MATCH (t:Tournament)
-        WHERE ID(t) = ${id}
-        RETURN t
-      `,
-      {},
-    );
-    return tournament;
-  }
-
-  async createTournament(tournamentData: CreateTournamentDTO) {
-    const newTournament = await this.neo4jService.write(
-      `
-      CREATE (t:Tournament)
-      SET t += $properties
-      `,
-      {
-        properties: {
-          id: tournamentData.id,
-        },
-      },
-    );
-    return newTournament;
-  }
-
-  async getTournamentDetails(id: number) {
-    const tournament = await this.neo4jService.write(
+  async getTournamentById(id: number): Promise<Tournament> {
+    const tournament = await this.neo4jService.read<Tournament>(
       `
       MATCH (t:Tournament)
       WHERE ID(t) = ${id}
@@ -50,7 +19,21 @@ export class TournamentService {
       `,
       {},
     );
-    return tournament;
+    return tournament[0];
+  }
+
+  async createTournament(tournamentData: CreateTournamentDTO) {
+    return await this.neo4jService.write(
+      `
+      CREATE (t:Tournament)
+      SET t += $properties
+      `,
+      {
+        properties: {
+          name: tournamentData.name,
+        },
+      },
+    );
   }
 
   async createMatch(matchData: CreateMatchDTO) {
@@ -58,6 +41,7 @@ export class TournamentService {
       `
       CREATE (m:Match)
       SET m += $properties
+      RETURN m
       `,
       {
         properties: {
@@ -73,34 +57,17 @@ export class TournamentService {
       `
     MATCH (m:Match)
     WHERE ID(m) = ${id}
+    RETURN m
     `,
       {},
     );
-    if (!match) return null;
     return match;
   }
 
   async verifyTournament(id: number): Promise<boolean> {
-    const verif = this.neo4jService.read(
-      `
-      MATCH (t:tournament)
-      WHERE ID(t) = ${id}
-      AND t += $properties
-      `,
-      {
-        properties: {
-          id: this.tournament.id,
-          name: this.tournament.name,
-          type: this.tournament.type,
-          startingDate: this.tournament.startingDate,
-          endingDate: this.tournament.endingDate,
-          participants: this.tournament.participants,
-          playersLenght: this.tournament.playersLenght,
-        },
-      },
-    );
     try {
-      console.log(verif);
+      const tournament = await this.getTournamentById(id);
+      console.log(tournament);
     } catch (error) {
       if (error.code === 'Neo.ClientError.Statement.EntityNotFound') {
         console.error('Tournament not found in the database.');
@@ -115,7 +82,6 @@ export class TournamentService {
         console.error('Error stack trace:', error.stack);
       }
     }
-    if (!verif) return false;
     return true;
   }
 
@@ -145,10 +111,11 @@ export class TournamentService {
   }
 
   async initiateTournament(id: number) {
-    const tournament = await this.getTournamentDetails(id);
+    const tournament: Tournament = await this.getTournamentById(id);
 
     if (this.verifyTournament(id)) return;
 
-    this.launchTournament(this.partic);
+    this.launchTournament(tournament.participants);
+    return tournament;
   }
 }

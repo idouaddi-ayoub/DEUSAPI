@@ -6,6 +6,5 @@ import { MembershipController } from './membership.controller';
 @Module({
   controllers: [MembershipController],
   providers: [MembershipService, Neo4jService],
-  exports: [MembershipService],
 })
 export class MembershipModule {}

@@ -47,9 +47,10 @@ export class Neo4jService {
     });
   }
 
-  read(cypher: string, params: Record<string, any>, database?: string): Result {
+  read<T>(cypher: string, params: Record<string, any>, database?: string) {
     const session = this.getReadSession(database);
-    return session.run(cypher, params);
+    return session.executeRead((tx) => tx.run<T>(cypher, params));
+    // return session.run(cypher, params);
   }
 
   write(
