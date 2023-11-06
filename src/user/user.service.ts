@@ -28,7 +28,7 @@ export class UserService {
   }
 
   async getUserByUsername(username: string) {
-    const user = await this.neo4jService.read(
+    return await this.neo4jService.read(
       `
       MATCH (u:User)
       WHERE u.username = ${username}
@@ -36,8 +36,6 @@ export class UserService {
     `,
       {},
     );
-
-    return user;
   }
 
   async createUser(UserData: CreateUserDto) {
