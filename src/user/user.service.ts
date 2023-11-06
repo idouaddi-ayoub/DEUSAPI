@@ -27,6 +27,19 @@ export class UserService {
     return user;
   }
 
+  async getUserByUsername(username: string) {
+    const user = await this.neo4jService.read(
+      `
+      MATCH (u:User)
+      WHERE u.username = ${username}
+      RETURN u
+    `,
+      {},
+    );
+
+    return user;
+  }
+
   async createUser(UserData: CreateUserDto) {
     const user = await this.neo4jService.write(
       ` CREATE (u:User) 

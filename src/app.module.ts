@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GamesModule } from './games/games.module';
 import { TournamentModule } from './tournament/tournament.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TournamentModule } from './tournament/tournament.module';
     MembershipModule,
     GamesModule,
     TournamentModule,
+    AuthModule,
   ],
   providers: [AppService],
   controllers: [AppController],
