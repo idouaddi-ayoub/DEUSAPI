@@ -21,7 +21,13 @@ import { AuthModule } from './auth/auth.module';
     TournamentModule,
     AuthModule,
   ],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // {
+    //   provide: '',
+    //   useClass(),
+    // },
+  ],
   controllers: [AppController],
 })
 export class AppModule {}

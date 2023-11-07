@@ -39,7 +39,7 @@ export class UserService {
   }
 
   async createUser(UserData: CreateUserDto) {
-    const user = await this.neo4jService.write(
+    return await this.neo4jService.write(
       ` CREATE (u:User) 
         SET u += $properties, u.id = randomUUID()
         RETURN u
@@ -52,7 +52,6 @@ export class UserService {
         },
       },
     );
-    return user;
   }
 
   async updateUser(id: number, UserData: UpdateUserDto) {
