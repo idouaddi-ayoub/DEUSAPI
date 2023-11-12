@@ -3,15 +3,15 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserService } from 'src/user/user.service';
 import { JwtModule } from '@nestjs/jwt';
-import { LocalStrategy } from './strategies/local-strategies';
 import { EncryptionService } from 'src/encryption/encryption.service';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
+import { JwtStrategy } from './strategies/jwt-strategies';
 
 @Module({
   providers: [
     AuthService,
     UserService,
-    LocalStrategy,
+    JwtStrategy,
     EncryptionService,
     Neo4jService,
   ],

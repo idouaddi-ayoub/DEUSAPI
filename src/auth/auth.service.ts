@@ -30,7 +30,6 @@ export class AuthService {
     return null;
   }
 
-  //work with cypher
   async login(username: string, password: string) {
     const payload = await this.neo4jService.read(
       `

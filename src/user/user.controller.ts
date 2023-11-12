@@ -1,11 +1,28 @@
-import { Controller, Get, Post, Body, Put, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('me')
+  getMe(@Req() req: Request) {
+    return req.user;
+  }
 
   @Get(':id')
   getUserById(@Param('id') id: number) {
