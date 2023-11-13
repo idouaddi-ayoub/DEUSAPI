@@ -1,7 +1,6 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { AuthService } from '../auth.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { LoginDto } from 'src/user/dto/login-user.dto';
+import { Injectable } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -9,8 +8,10 @@ import { Neo4jService } from 'src/neo4j/neo4j.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  private readonly neo4jService: Neo4jService;
-  constructor() {
+  constructor(
+    private readonly neo4jService: Neo4jService,
+    private readonly configService: ConfigService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: JwtModule.register({

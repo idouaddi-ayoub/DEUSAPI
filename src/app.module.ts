@@ -9,6 +9,9 @@ import { AppService } from './app.service';
 import { GamesModule } from './games/games.module';
 import { TournamentModule } from './tournament/tournament.module';
 import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
+import { ClerkModule } from './clerk/clerk.module';
 
 @Module({
   imports: [
@@ -20,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
     GamesModule,
     TournamentModule,
     AuthModule,
+    ClerkModule,
   ],
   providers: [
     AppService,
@@ -27,6 +31,10 @@ import { AuthModule } from './auth/auth.module';
     //   provide: '',
     //   useClass(),
     // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
   controllers: [AppController],
 })

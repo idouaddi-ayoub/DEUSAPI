@@ -4,37 +4,42 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { response } from 'express';
-import jwt from 'jsonwebtoken';
+import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from '../util/decorators/public.decorator';
+import { JwtService } from '@nestjs/jwt';
+import clerk from '@clerk/clerk-sdk-node';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly jwtService: JwtService,
+  ) {}
+
   //request headers
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const publicKey = `${process.env.CLERK_PEM_PUBLIC_KEY}`;
-    if (publicKey) return true;
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) return true;
+    const publicKey = process.env.CLERK_PEM_PUBLIC_KEY;
     const request = context.switchToHttp().getRequest();
-    const [type, token] = request.headers.authorization.split(' ') ?? [];
-    const sessionToken = request.cookie.get('__session');
-
-    if (!sessionToken) throw new UnauthorizedException('Unvalid session token');
-
+    const token = this.extractTokenFromHeader(request);
+    if (!token) throw new UnauthorizedException('Invalid token');
     try {
-      let decoded: any;
-      if (token) {
-        decoded = jwt.verify(token, publicKey);
-        response.status(200).json({ sessionToken: decoded });
-        return;
-      } else {
-        decoded = jwt.verify(sessionToken, publicKey);
-        response.status(200).json({ sessionToken: decoded });
-        return;
-      }
+      console.log(await clerk.users.getUserList());
+      const isValid = clerk.verifyToken(token, {});
+      if (!isValid) throw new UnauthorizedException('Invalid token');
+      return true;
     } catch (error) {
-      response.status(400).json({
-        error: 'Invalid Token',
-      });
+      console.log(error);
+      throw new UnauthorizedException('Invalid token');
     }
+  }
+
+  private extractTokenFromHeader(request: any): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
 }
