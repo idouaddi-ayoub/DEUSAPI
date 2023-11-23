@@ -15,7 +15,6 @@ export class AuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const authHeader = req.headers.authorization || ``;
     const headerToken = authHeader.split(' ')[1];
-
     const { isUnknown, isSignedIn } = await clerkClient.authenticateRequest({
       headerToken,
     });
